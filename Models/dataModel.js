@@ -1,6 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const csvParser = require('csv-parser');
+const {parse, format} = require ('date-fns');
 
 // Construct the path to the CSV file
 const dataPath = path.join(__dirname, '../data/transfers.csv');
@@ -51,5 +52,33 @@ const readData = () => {
   });
 };
 
+const findLargestWeightOnDate = async (searchDate) => {
+    try {
+      const data = await readData();
+  
+      
+      const parsedSearchDate = parse(searchDate, 'dd/MM/yyyy', new Date());
+      const formattedDate = format(parsedSearchDate, 'yyyy-MM-dd');
+
+  
+      const filteredData = data.filter(entry => format(new Date(entry.date), 'yyyy-MM-dd') === formattedDate);
+
+  
+      if (filteredData.length === 0) {
+        return null;
+      }
+  
+      const maxWeightEntry = filteredData.reduce((max, row) =>
+        row.weight > max.weight ? row : max
+      );
+  
+      return maxWeightEntry;
+    } catch (error) {
+
+      console.error('Error finding largest weight:', error);
+      throw error;
+    }
+  };
+
 // Export the readCSV function
-module.exports = { readData };
+module.exports = { readData, findLargestWeightOnDate };
