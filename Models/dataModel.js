@@ -2,6 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const csvParser = require('csv-parser');
 const {parse, format} = require ('date-fns');
+const { error } = require('console');
 
 // Construct the path to the CSV file
 const dataPath = path.join(__dirname, '../data/transfers.csv');
@@ -80,5 +81,38 @@ const findLargestWeightOnDate = async (searchDate) => {
     }
   };
 
+  const modeTransfer = async () => {
+    try {
+      const data = await readData();
+
+      const frequencyMapping = {};
+
+      data.forEach(entry => {
+        const key = `${entry.from_material}--${entry.to_material}`;
+        if (frequencyMapping[key]) {
+          frequencyMapping[key]++;
+        } else {
+          frequencyMapping[key] = 1;
+        }
+      });
+
+      let max = 0;
+      let mode = null;
+  
+      for (const [key, count] of Object.entries(frequencyMapping)) {
+        if (count > max) {
+          max = count;
+          const [from_material, to_material] = key.split('--');
+          mode = { from_material, to_material, count };
+        }
+      }
+      return mode;
+    } catch (error) {
+      console.error('Error finding mode transfer:', error);
+      throw error;
+    }
+  };
+
+
 // Export the readCSV function
-module.exports = { readData, findLargestWeightOnDate };
+module.exports = { readData, findLargestWeightOnDate, modeTransfer };

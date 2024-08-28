@@ -1,5 +1,5 @@
 // controllers/csvController.js
-const { readData, findLargestWeightOnDate } = require('../Models/dataModel');
+const { readData, findLargestWeightOnDate, modeTransfer } = require('../Models/dataModel');
 
 const getCsvData = async (req, res) => {
   try {
@@ -25,5 +25,14 @@ const getLargestWeightOnDate = async (req, res) => {
       res.status(500).json({ success: false, message: 'Failed to retrieve the largest weight' });
     }
   };
+
+  const getModeTransfer = async (req, res) => {
+    try {
+      const data = await modeTransfer();
+      res.status(200).json({success: true, data: data})
+    } catch (error) {
+      res.status(500).json({ success: false, message: 'Failed to fetch mode transfer' });
+    }
+  }
 // Export the getCsvData function
-module.exports = { getCsvData, getLargestWeightOnDate };
+module.exports = { getCsvData, getLargestWeightOnDate, getModeTransfer };

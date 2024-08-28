@@ -1,5 +1,5 @@
 const express = require('express');
-const { getCsvData, getLargestWeightOnDate } = require('../Controllers/dataController.js');
+const { getCsvData, getLargestWeightOnDate, getModeTransfer } = require('../Controllers/dataController.js');
 
 const router = express.Router();
 
@@ -7,6 +7,8 @@ const router = express.Router();
 router.get('/', getCsvData);
 
 router.post('/largest-weight', getLargestWeightOnDate);
+
+router.get ('/getModeTransfer', getModeTransfer);
 
 
 module.exports= router;
